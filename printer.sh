@@ -5,7 +5,7 @@ FIXPRINT="1"
 # some day we can try: https://github.com/istopwg/ippsample/
 
 dolog() {
-	echo "* discord.sh $1"
+	echo "* printer.sh $1"
 	logger "$1"
 }
 
@@ -16,7 +16,7 @@ DISCORDCMD="/opt/discord.sh"
 if [ ! -x "${DISCORDCMD}" ]; then
 	dolog "path (${DISCORDCMD}) is not valid"
 	exit 1
-else 
+else
 	dolog "successfully found discord.sh (${DISCORDCMD})"
 fi
 
@@ -24,18 +24,21 @@ if command -v jq &>/dev/null; then
 	dolog "successfully found jq command"
 else
  	dolog "unable to locate jq command"
+	exit 1
 fi
 
 if command -v bash &>/dev/null; then
 	dolog "successfully found bash command"
 else
  	dolog "unable to locate bash command"
+	exit 1
 fi
 
 if command -v curl &>/dev/null; then
 	dolog "successfully found curl command"
 else
  	dolog "unable to locate curl command"
+	exit 1
 fi
 
 DISCORDPATH=$(dirname "${DISCORDCMD}")
@@ -54,7 +57,7 @@ if [ -z "${PRINTER_CONF_PATH}" ]; then
 fi
 
 dolog "found printer configuration at ${PRINTER_CONF_PATH}"
- 
+
 source "${PRINTER_CONF_PATH}"
 
 if [ -z "${WEBHOOK}" -o -z "${TEAM_NUM}" ]; then
@@ -83,21 +86,22 @@ else
 	PDFNAME="$1"
 	logger "printer.sh is starting print job at $DST"
 	sender="$3"
-	
-	if [ ! -e "$1" ]; then
+
+	if [ ! -f "$1" ]; then
 		dolog "error file $1 does not exist"
+		exit 1
 	else
-		dolog "valid file found, attempting to send"
+		dolog "valid file found, attempting to proceed"
 	fi
-	
+
 	FILESIZE=$(($(stat -c '%s' $PDFNAME)/1024))
-	
+
 	dolog "file size identified to be ${FILESIZE}"
-	
+
 	if [ -z "$3" ]; then
 			sender="unknown"
 	fi
-	
+
 	teaminf=""
 	if [ ! -z "${TEAM_NUM}" ]; then
 		teaminf="(Team ${TEAM_NUM})"
@@ -105,12 +109,12 @@ else
 
 	if [ $((RANDOM%50)) -eq 0 ] || [ $FILESIZE -gt 8100 ]; then
 		message="**Discord Printer** is *jammed*! Try printing again... https://i.imgur.com/VYwZURV.gif"
-	else 
+	else
 		message="**Discord Printer** recieved a new document and has made it available for you to download.   (Sender:   ${sender}) ${teaminf}"
+		DISCORDCMD="${DISCORDCMD} --file"
 	fi
 
 	$DISCORDCMD \
-		--file "${PDFNAME}" \
 		--username "CCDCPrinter" \
 		--text "${message}" \
 		--avatar "https://i.imgur.com/0R30ZZ5.png" \
@@ -118,6 +122,6 @@ else
 	logger "printer.sh completed printer job at $DST"
 	if [ "$FIXPRINT" -eq 1 ]; then
 		rm "${PDFNAME}"
-	fi  
+	fi
 fi
 exit 0
