@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  discord-printer:
+    image: discordprinter
+    container_name: discord-printer
+    privileged: true
+    network_mode: host
+    ports:
+      - "631:8631"
+      - "8080:8080"
+      - "1631:1631"
+    volumes:
+      - ./printer.conf:/opt/printer.conf
+    # Add other configurations as needed
+
