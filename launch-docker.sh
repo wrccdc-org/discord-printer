@@ -1,5 +1,7 @@
 #!/bin/bash
 
+USE_IPPPRINTER=0
+
 cat <<EOF
 
 Welcome!
@@ -37,6 +39,10 @@ else
 fi
 
 while true; do
-	ippeveprinter -M "DiscordPrinter" -m "DiscordPrinter" -l "The Data Center" -s "10,2" -f "application/pdf,image/jpeg,image/pwg-raster" -i /opt/logo.png -p 1631 -c /opt/printer.sh -k -d /var/spool/pdf --no-web-forms -r off -v DiscordPrinter
+	if [ "${USE_IPPPRINTER}" -eq 1 ]; then
+		ippeveprinter -M "DiscordPrinter" -m "DiscordPrinter" -l "The Data Center" -s "10,2" -f "application/pdf,image/jpeg,image/pwg-raster" -i /opt/logo.png -p 1631 -c /opt/printer.sh -k -d /var/spool/pdf --no-web-forms -r off -v DiscordPrinter
+  	else
+   		tail -fn 1000 /var/log/syslog
+     	fi
 	sleep 30
 done
