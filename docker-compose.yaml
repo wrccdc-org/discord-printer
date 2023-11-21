@@ -2,14 +2,15 @@ version: '3'
 
 services:
   discord-printer:
-    image: discordprinter
+    image: ghcr.io/wrccdc-org/ccdc-discord-printer:latest
     container_name: discord-printer
     privileged: true
     network_mode: host
-    ports:
-      - "631:8631"
-      - "8080:8080"
-      - "1631:1631"
+    #ports:
+    #  - "5353:5353"
+    #  - "631:631"
+    #  - "8080:8080"
+    #  - "1631:1631"
     volumes:
       - ./printer.conf:/opt/printer.conf
     # Add other configurations as needed
