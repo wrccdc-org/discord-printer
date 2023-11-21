@@ -111,7 +111,7 @@ else
 		message="**Discord Printer** is *jammed*! Try printing again... https://i.imgur.com/VYwZURV.gif"
 	else
 		message="**Discord Printer** recieved a new document and has made it available for you to download.   (Sender:   ${sender}) ${teaminf}"
-		DISCORDCMD="${DISCORDCMD} --file"
+		DISCORDCMD="${DISCORDCMD} --file ${PDFNAME}"
 	fi
 
 	$DISCORDCMD \
