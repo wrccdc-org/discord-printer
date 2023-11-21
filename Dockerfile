@@ -2,7 +2,7 @@ FROM ubuntu:22.04 AS builder
 WORKDIR /tmp
 RUN apt-get update \
     && apt-get -y install cups printer-driver-cups-pdf cups-ipp-utils git sed busybox-syslogd bash curl jq file \
- #   && apt-get -y upgrade \
+    && apt-get -y upgrade \
     && /etc/init.d/cups start \
     && lpadmin -p DiscordPrinter -v cups-pdf:/ -E -i /usr/share/ppd/cups-pdf/CUPS-PDF_opt.ppd -u allow:all \
     && lpadmin -d DiscordPrinter \
