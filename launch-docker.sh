@@ -26,7 +26,8 @@ echo "Beginning Tests..."
 
 if [ -x /usr/sbin/cupsd ]; then
 	echo "Starting core services..."
-	busybox syslogd -O /var/log/syslog -C4096
+	busybox syslogd -O /var/log/syslog
+	touch /var/log/syslog; chmod 777 /var/log/syslog
 	/etc/init.d/dbus start
 	/etc/init.d/avahi-daemon start
 	/etc/init.d/cups start
